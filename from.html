@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Bank Statement Generator</title>
+  <style>
+    body { font-family: Arial; padding: 20px; }
+    table { border-collapse: collapse; width: 100%; margin-bottom: 20px; }
+    table, th, td { border: 1px solid black; padding: 8px; }
+    input[type="text"], input[type="number"], input[type="file"] { width: 100%; padding: 5px; }
+    button { padding: 8px 15px; }
+  </style>
+</head>
+<body>
+
+<h2>Generate Bank Statement PDF</h2>
+<form action="generate_pdf.php" method="post" enctype="multipart/form-data">
+  <label>Name:</label>
+  <input type="text" name="name" required>
+
+  <label>Address:</label>
+  <input type="text" name="address" required>
+
+  <label>City:</label>
+  <input type="text" name="city" required>
+
+  <label>State:</label>
+  <input type="text" name="state" required>
+
+  <label>Pincode:</label>
+  <input type="text" name="pincode" required>
+
+  <label>Mobile:</label>
+  <input type="text" name="mobile" required>
+
+  <label>Account Number:</label>
+  <input type="text" name="account_number" required>
+
+  <label>Customer/CIF ID:</label>
+  <input type="text" name="cif_id" required>
+
+  <label>Upload Banner (PNG/JPG):</label>
+  <input type="file" name="banner" accept="image/*" required>
+
+  <h3>Transactions</h3>
+  <table id="txnTable">
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Txn ID</th>
+        <th>Remarks</th>
+        <th>Amount (Rs.)</th>
+        <th>Balance (Rs.)</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+  <button type="button" onclick="addRow()">Add Transaction</button>
+
+  <br><br>
+  <button type="submit">Generate PDF</button>
+</form>
+
+<script>
+function addRow() {
+  const table = document.querySelector("#txnTable tbody");
+  const row = document.createElement("tr");
+  row.innerHTML = `
+    <td><input type="text" name="txn_date[]" required></td>
+    <td><input type="text" name="txn_id[]" required></td>
+    <td><input type="text" name="txn_remarks[]" required></td>
+    <td><input type="text" name="txn_amount[]" required></td>
+    <td><input type="text" name="txn_balance[]" required></td>
+  `;
+  table.appendChild(row);
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>AI Assistant Chat</title>
+  <link rel="stylesheet" href="ai_chat_style.css">
+</head>
+<body>
+  <div class="chat-container">
+    <a href="home.php" class="btn btn-secondary btn-back">&larr; Back to Home</a>
+    <h2>🤖 SnapBazaar AI Assistant</h2>
+    <div id="chat-box" class="chat-box"></div>
+    <form id="chat-form">
+      <input type="text" id="user-input" placeholder="Ask your question..." autocomplete="off" required />
+      <button type="submit">Send</button>
+    </form>
+  </div>
+
+  <script>
+    const chatForm = document.getElementById('chat-form');
+    const chatBox = document.getElementById('chat-box');
+    const userInput = document.getElementById('user-input');
+
+    // Load chat history on page load
+    window.onload = () => {
+      const savedChat = localStorage.getItem('chat_history');
+      if (savedChat) {
+        chatBox.innerHTML = savedChat;
+        chatBox.scrollTop = chatBox.scrollHeight;
+      }
+    };
+
+    // Save chat history to localStorage
+    function saveChatHistory() {
+      localStorage.setItem('chat_history', chatBox.innerHTML);
+    }
+
+    chatForm.addEventListener('submit', async function (e) {
+      e.preventDefault();
+      const message = userInput.value.trim();
+      if (!message) return;
+
+      chatBox.innerHTML += `<div class="user-msg">🧑‍💻 You: ${message}</div>`;
+      userInput.value = "";
+
+      const response = await fetch('ai_chat_response.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: `message=${encodeURIComponent(message)}`
+      });
+
+      const data = await response.json();
+      chatBox.innerHTML += `<div class="bot-msg">🤖 AI: ${data.response}</div>`;
+      chatBox.scrollTop = chatBox.scrollHeight;
+
+      saveChatHistory(); // Save chat after response
+    });
+
+    // Clear chat history on page unload (leave or close tab)
+    window.addEventListener('beforeunload', () => {
+      localStorage.removeItem('chat_history');
+    });
+  </script>
+</body>
+</html>
